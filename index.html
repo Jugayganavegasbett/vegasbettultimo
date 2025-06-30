@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VegasBett</title>
+  <style>
+    body { background: #23003a; color: white; text-align: center; font-family: sans-serif; }
+    button { background: gold; color: black; font-size: 20px; padding: 15px; margin: 20px auto; border: none; border-radius: 10px; cursor: pointer; display: block; width: 80%; max-width: 300px; }
+    img { width: 200px; margin: 20px auto; display: block; }
+    footer { margin-top: 2rem; font-size: 0.8rem; color: #ccc; }
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="Logo VegasBett"/>
+  <h1>¡Bienvenido a VegasBett!</h1>
+  <p>Obtené tu bono del 35% al registrarte y hacer tu primer depósito</p>
+  <button onclick="handleClick()">💰 Quiero mi bono</button>
+  <footer>
+    <p>Todos los derechos reservados Spark Publicidad</p>
+    <p>✅ Verificado por WhatsApp</p>
+  </footer>
+
+  <script>
+    const access_token = "EAAKMYNrmVAABO0aFmGGHPpG5Gbhv6jbGK3SJGp0KD1DcgzlfhFjdtYaM1pIANhuZC8wdVjcXtuxHsc3HMi6Wq81uzCUqDBIFbIuANnE8IIFvxESDvzWdr7jRH50QjpOTTPr7WcCUjw2GUL4v2xZBwrFYfscGPZBoe0UfRJkjBCQKQItjdkY8Mbs5T9Xu9ZCylAZDZD";
+    const pixel_id = "1940802446747600";
+    const excel_url = "https://script.google.com/macros/s/AKfycbwtch1CJE9_yMsyntJnbZ4mLH_PENbdHGYL4E-xc2bElKNJTHQ4sqluR4JfNNRJS1w/exec";
+
+    function sendEvent(event_name) {
+      fetch(`https://graph.facebook.com/v19.0/${pixel_id}/events?access_token=${access_token}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: [{
+            event_name: event_name,
+            event_time: Math.floor(Date.now() / 1000),
+            event_source_url: window.location.href,
+            action_source: "website",
+            user_data: { client_user_agent: navigator.userAgent },
+            custom_data: { currency: "ARS", value: 100.00 }
+          }]
+        })
+      });
+    }
+
+    function registerExcel(evento) {
+      const params = new URLSearchParams({
+        boton: evento,
+        ua: navigator.userAgent,
+        origen: window.location.href
+      });
+      fetch(excel_url + "?" + params.toString())
+        .then(res => console.log("Registrado en Excel:", evento))
+        .catch(err => console.error("Error en Excel", err));
+    }
+
+    function handleClick() {
+      sendEvent("Purchase");
+      sendEvent("Contact");
+      registerExcel("Quiero mi bono");
+      setTimeout(() => {
+        window.location.href = "https://wa.me/5492235931148?text=Quiero%20mi%20bono";
+      }, 500);
+    }
+
+    window.addEventListener("load", () => {
+      sendEvent("PageView");
+    });
+  </script>
+</body>
+</html>
